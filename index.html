@@ -1,0 +1,374 @@
+Избранное от Chrome
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Биоритмы · Сон · Режим дня подростка</title>
+<style>
+:root{
+  --bg:#0f1420; --card:#171e2e; --card2:#1d2638; --text:#e8edf7; --muted:#9aa7bf;
+  --accent:#7c9cff; --accent2:#5ee0c2; --warn:#ffb86b; --danger:#ff7b8a;
+  --radius:16px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:linear-gradient(160deg,#0f1420,#131a2b 60%,#0f1420);color:var(--text);min-height:100vh}
+.wrap{max-width:980px;margin:0 auto;padding:24px 16px 60px}
+header{padding:28px 0 8px;text-align:center}
+header h1{font-size:clamp(26px,4vw,40px);background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{color:var(--muted);margin-top:8px;font-size:15px}
+nav{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:22px 0 8px}
+nav button{background:var(--card);border:1px solid #2a3550;color:var(--muted);padding:10px 20px;border-radius:999px;cursor:pointer;font-size:15px;transition:.2s}
+nav button:hover{color:var(--text)}
+nav button.active{background:linear-gradient(90deg,var(--accent),#6a7ff0);color:#fff;border-color:transparent;font-weight:600}
+section.card{background:var(--card);border:1px solid #26314a;border-radius:var(--radius);padding:22px;margin-top:16px;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+h2{font-size:22px;margin-bottom:6px}
+.hint{color:var(--muted);font-size:14px;margin-bottom:16px}
+label{display:block;font-size:13px;color:var(--muted);margin:12px 0 4px}
+input,select{width:100%;max-width:260px;background:var(--card2);border:1px solid #31405f;color:var(--text);padding:10px 12px;border-radius:10px;font-size:16px}
+input:focus,select:focus{outline:none;border-color:var(--accent)}
+.row{display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end}
+.seg{display:flex;gap:0;border:1px solid #31405f;border-radius:10px;overflow:hidden}
+.seg button{background:transparent;border:none;color:var(--muted);padding:10px 14px;cursor:pointer;font-size:14px}
+.seg button.active{background:var(--accent);color:#fff}
+.btn{background:linear-gradient(90deg,var(--accent),#6a7ff0);border:none;color:#fff;padding:12px 22px;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;margin-top:16px}
+.btn:hover{filter:brightness(1.1)}
+.result{margin-top:18px}
+.times{display:flex;gap:12px;flex-wrap:wrap;margin-top:10px}
+.time-chip{background:var(--card2);border:1px solid #31405f;border-radius:12px;padding:12px 18px;text-align:center;min-width:120px}
+.time-chip .t{font-size:24px;font-weight:700;color:var(--accent2)}
+.time-chip .l{font-size:12px;color:var(--muted)}
+.time-chip.best{border-color:var(--accent2);box-shadow:0 0 0 1px var(--accent2)}
+.tag{display:inline-block;font-size:11px;background:var(--accent2);color:#0f1420;border-radius:6px;padding:2px 8px;margin-top:4px;font-weight:700}
+.badge{display:inline-block;font-size:11px;border-radius:6px;padding:2px 8px;margin-top:4px;font-weight:700}
+.b-g{background:var(--accent2);color:#0f1420}.b-y{background:var(--warn);color:#0f1420}.b-r{background:var(--danger);color:#fff}
+table{width:100%;border-collapse:collapse;margin-top:12px;font-size:14px}
+th,td{padding:9px 10px;border-bottom:1px solid #26314a;text-align:left}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+td b{color:var(--accent2)}
+canvas{width:100%;height:300px;display:block;border-radius:12px;background:var(--card2);margin-top:14px}
+.legend{display:flex;gap:18px;margin-top:10px;font-size:13px;flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+ul.tips{margin:10px 0 0 18px;line-height:1.7;font-size:15px}
+.fact{background:rgba(94,224,194,.08);border-left:3px solid var(--accent2);padding:10px 14px;border-radius:8px;margin:12px 0;font-size:14px;color:#cfeee5}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:14px}
+.mini{background:var(--card2);border:1px solid #31405f;border-radius:12px;padding:16px}
+.mini h3{font-size:16px;margin-bottom:8px;color:var(--accent2)}
+.mini p,.mini li{font-size:14px;color:#c9d3e6;line-height:1.6}
+.mini ul{margin-left:16px}
+.hidden{display:none}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:40px;line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>🌙 Биоритмы, сон и режим дня</h1>
+  <p>калькулятор и справочник для подростков — считается в браузере, ничего не отправляет</p>
+</header>
+
+<nav>
+  <button class="active" data-tab="sleep">😴 Калькулятор сна</button>
+  <button data-tab="bio">📈 Биоритмы</button>
+  <button data-tab="day">📅 Режим дня</button>
+  <button data-tab="info">📚 Справочник</button>
+</nav>
+
+<!-- ============ КАЛЬКУЛЯТОР СНА ============ -->
+<section class="card" id="tab-sleep">
+  <h2>😴 Когда ложиться и вставать</h2>
+  <p class="hint">Сон идёт циклами по ~90 минут. Если проснуться в конце цикла, будет легко; если посреди глубокого сна — разбитость гарантирована. К времени засыпания добавляем 15 минут (уснуть мгновенно не получится).</p>
+
+  <div class="row">
+    <div>
+      <label>Возраст</label>
+      <select id="age">
+        <option value="teen" selected>13–18 лет (нужно 8–10 ч)</option>
+        <option value="kid">7–12 лет (нужно 9–12 ч)</option>
+        <option value="adult">18+ (нужно 7–9 ч)</option>
+      </select>
+    </div>
+    <div>
+      <label>Что я знаю?</label>
+      <div class="seg" id="mode">
+        <button class="active" data-m="wake">Во сколько вставать</button>
+        <button data-m="bed">Во сколько ложусь</button>
+      </div>
+    </div>
+    <div>
+      <label>Время</label>
+      <input type="time" id="timeInput" value="07:00">
+    </div>
+  </div>
+
+  <button class="btn" onclick="calcSleep()">Рассчитать</button>
+
+  <div class="result" id="sleepResult" style="display:none"></div>
+</section>
+
+<!-- ============ БИОРИТМЫ ============ -->
+<section class="card hidden" id="tab-bio">
+  <h2>📈 Три биоритма</h2>
+  <p class="hint">Классическая теория биоритмов: с рождения нас сопровождают три ритма — физический (23 дня), эмоциональный (28 дней) и интеллектуальный (33 дня). Это скорее тренировка самонаблюдения, чем строгая наука, но график со своими «пиками» и «спадами» строить интересно.</p>
+
+  <div class="row">
+    <div>
+      <label>Дата рождения</label>
+      <input type="date" id="bday" value="2010-06-01">
+    </div>
+    <div>
+      <label>Горизонт графика</label>
+      <select id="range">
+        <option value="15" selected>±15 дней</option>
+        <option value="30">±30 дней</option>
+      </select>
+    </div>
+  </div>
+  <button class="btn" onclick="calcBio()">Построить график</button>
+
+  <div class="result hidden" id="bioResult">
+    <canvas id="bioCanvas" width="900" height="300"></canvas>
+    <div class="legend">
+      <span><span class="dot" style="background:#ff7b8a"></span> Физический (23 дн.)</span>
+      <span><span class="dot" style="background:#ffb86b"></span> Эмоциональный (28 дн.)</span>
+      <span><span class="dot" style="background:#7c9cff"></span> Интеллектуальный (33 дн.)</span>
+      <span><span class="dot" style="background:#fff"></span> Сегодня</span>
+    </div>
+    <div id="bioToday"></div>
+  </div>
+</section>
+
+<!-- ============ РЕЖИМ ДНЯ ============ -->
+<section class="card hidden" id="tab-day">
+  <h2>📅 Личный режим дня</h2>
+  <p class="hint">Укажи якорные точки — остальное соберём по правилам здорового распорядка: уроки, еда через 3–4 часа, движение, уроки до ужина, гаджеты выключаются за час до сна.</p>
+
+  <div class="row">
+    <div><label>Подъём</label><input type="time" id="dWake" value="07:00"></div>
+    <div><label>Начало школы</label><input type="time" id="dSchool1" value="08:30"></div>
+    <div><label>Конец уроков</label><input type="time" id="dSchool2" value="14:30"></div>
+    <div><label>Секция / спорт</label><input type="time" id="dSport" value="17:00"></div>
+    <div>
+      <label>Сколько минут на дорогу в школу</label>
+      <input type="number" id="dRoad" value="20" min="0" max="120">
+    </div>
+  </div>
+  <button class="btn" onclick="calcDay()">Собрать расписание</button>
+
+  <div class="result" id="dayResult" style="display:none">
+    <table id="dayTable"><thead><tr><th>Время</th><th>Дело</th><th>Комментарий</th></tr></thead><tbody></tbody></table>
+  </div>
+</section>
+
+<!-- ============ СПРАВОЧНИК ============ -->
+<section class="card hidden" id="tab-info">
+  <h2>📚 Справочник</h2>
+
+  <div class="fact">У подростков мелатонин — «гормон сна» — начинает выделяться примерно на 1–2 часа позже, чем у взрослых. Поэтому желание заснуть к 23:00–00:30 — это биология, а не лень. Но вставать в школу всё равно рано, поэтому компромисс — стабильный режим, а не «отсыпание до обеда в выходные».</div>
+
+  <div class="grid2">
+    <div class="mini">
+      <h3>Нормы сна</h3>
+      <ul>
+        <li>6–12 лет: <b>9–12 часов</b></li>
+        <li>13–18 лет: <b>8–10 часов</b></li>
+        <li>18+: 7 и более часов</li>
+      </ul>
+      <p style="margin-top:8px">Считай от времени подъёма: если вставать в 7:00, лечь нужно в 21:00–23:00.</p>
+    </div>
+    <div class="mini">
+      <h3>Почему «доспать в выходные» не работает</h3>
+      <p>Два часа допоздна в субботу сдвигают внутренние часы на час-полтора — и в понедельник утром организм живёт по «другому часовому поясу». Это называют социальным джетлагом. Отсыпаться можно, но не больше чем на 1–2 часа относительно будней.</p>
+    </div>
+    <div class="mini">
+      <h3>Гаджеты и сон</h3>
+      <ul>
+        <li>Синий свет экрана тормозит выработку мелатонина.</li>
+        <li>Правило: <b>экран — минимум за 60 минут до сна</b>.</li>
+        <li>Ночной режим/жёлтый фильтр помогает, но не отменяет правило.</li>
+      </ul>
+    </div>
+    <div class="mini">
+      <h3>Кофеин</h3>
+      <p>Период полувыведения кофеина — 5–6 часов. Энергетик в 18:00 — это четверть его дозы в крови в полночь. Последняя чашка — не позднее 14:00–15:00.</p>
+    </div>
+    <div class="mini">
+      <h3>Гигиена сна: чек-лист</h3>
+      <ul>
+        <li>Одно и то же время отбоя и подъёма ±30 минут.</li>
+        <li>Прохладная тёмная комната (18–21 °C).</li>
+        <li>Не часами «допивать» день в кровати — кровать = сон.</li>
+        <li>Днём — свет и движение, вечером — приглушённый свет.</li>
+        <li>Не смотреть на часы, если не спится: лишь сильнее тревожно.</li>
+      </ul>
+    </div>
+    <div class="mini">
+      <h3>Микросон и дедлайн «ещё одна серия»</h3>
+      <p>Хронический недосып компенсируется микросонами — секунды отключки, которые мозг делает сам. Они коварны у экрана и за рулём велосипеда, а в учёбе превращаются в «читаю одну страницу пять раз».</p>
+    </div>
+  </div>
+
+  <h2 style="margin-top:28px">Как работает калькулятор</h2>
+  <ul class="tips" style="color:#c9d3e6">
+    <li><b>Сон</b>: считаем циклы по 90 минут, прибавляем 15 минут на засыпание и подбираем такое время, чтобы попасть в лёгкую фазу сна. Для подростков по умолчанию 6 циклов (9 ч) — внутри нормы 8–10 часов с учётом вариаций.</li>
+    <li><b>Биоритмы</b>: синусоиды с периодами 23, 28 и 33 дня, отсчитанные от даты рождения. Значение выше нуля — «подъём», ниже — «спад», пересечение нуля — условно «нестабильный день».</li>
+    <li><b>Режим дня</b>: расписание собирается из рекомендуемых блоков (еда каждые 3–4 часа, домашняя работа до вечера, час без экранов перед сном).</li>
+  </ul>
+</section>
+
+<footer>Справочная информация, не медицинская рекомендация. При постоянной бессоннице или сильной дневной сонливости — к врачу.<br>Работает офлайн, данные остаются на твоём устройстве.</footer>
+</div>
+
+<script>
+// ---------- табы ----------
+document.querySelectorAll('nav button').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('section.card').forEach(s=>{
+      if(s.id!=='tab-info') s.classList.add('hidden');
+    });
+    document.getElementById('tab-'+b.dataset.tab).classList.remove('hidden');
+  });
+});
+
+function fmt(h){h=((h%24)+24)%24;const m=Math.round((h-Math.floor(h))*60);let hh=Math.floor(h);
+  let mm=m;if(mm===60){hh=(hh+1)%24;mm=0;}
+  return String(hh).padStart(2,'0')+':'+String(mm).padStart(2,'0');}
+function toH(t){const[a,b]=t.split(':').map(Number);return a+b/60;}
+const CYC=1.5, FALL=0.25; // 90 мин и 15 мин
+
+let mode='wake';
+document.querySelectorAll('#mode button').forEach(b=>b.addEventListener('click',()=>{
+  mode=b.dataset.m;
+  document.querySelectorAll('#mode button').forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+}));
+
+function calcSleep(){
+  const age=document.getElementById('age').value;
+  const t=toH(document.getElementById('timeInput').value);
+  const need={teen:6,kid:7,adult:5}[age]; // оптимальное число циклов
+  const minC={teen:5.6,kid:6.4,adult:4.7}[age];
+  const maxC={teen:6.8,kid:8,adult:6}[age];
+  let chips=[],title='';
+  if(mode==='wake'){
+    title='Ложиться в:';
+    const base=t-need*CYC-FALL;
+    for(let c=maxC;c>=minC;c-=0.5){ // от большего к меньшему
+      chips.push({t:fmt(t-c*CYC-FALL),l:(c%1?Math.round(c*90):c*90)+' мин сна',c:Math.abs(c-need)<0.01?0:(c>need?1:2)});
+    }
+  } else {
+    title='Проснуться в:';
+    const base=t+FALL;
+    for(let c=maxC;c>=minC;c-=0.5){
+      chips.push({t:fmt(base+c*CYC),l:(c%1?Math.round(c*90):c*90)+' мин сна',c:Math.abs(c-need)<0.01?0:(c>need?1:2)});
+    }
+  }
+  // сортировка по времени и пометка оптимального
+  chips.sort((a,b)=>a.t.localeCompare(b.t));
+  let html=`<p style="color:var(--muted)">${title}</p><div class="times">`+
+    chips.map(x=>{
+      const cls=x.c===0?'time-chip best':'time-chip';
+      const tag=x.c===0?'<span class="tag">оптимально</span>':(x.c===2?'<span class="badge b-y">коротковато</span>':'<span class="badge b-r">многовато</span>');
+      return `<div class="${cls}"><div class="t">${x.t}</div><div class="l">${x.l}</div>${tag}</div>`;
+    }).join('')+'</div>'+
+    `<div class="fact" style="margin-top:16px">Хочешь попасть в норму 8–10 часов (13–18 лет)? Ориентируйся на чипы с меткой «оптимально» или на один соседний. Просыпаться в конце цикла важно не меньше, чем доспать нужное количество часов.</div>`;
+  const r=document.getElementById('sleepResult');r.innerHTML=html;r.style.display='block';
+}
+
+// ---------- биоритмы ----------
+function drawBio(){
+  const d=new Date(document.getElementById('bday').value+'T00:00:00');
+  if(isNaN(d))return;
+  const R=Math.min(parseInt(document.getElementById('range').value),40);
+  const periods=[['Физический',23,'#ff7b8a'],['Эмоциональный',28,'#ffb86b'],['Интеллектуальный',33,'#7c9cff']];
+  const cv=document.getElementById('bioCanvas'),ctx=cv.getContext('2d');
+  const W=cv.width=cv.clientWidth||900,H=cv.height=300;
+  ctx.clearRect(0,0,W,H);
+  const today=new Date();today.setHours(0,0,0,0);
+  const days=2*R;
+  const step=W/days;
+  const midY=H/2;
+  // сетка
+  ctx.strokeStyle='#2a3550';ctx.fillStyle='#9aa7bf';ctx.font='11px sans-serif';
+  for(let i=-R;i<=R;i+=5){
+    const x=(i+R)*step;
+    ctx.beginPath();ctx.moveTo(x,10);ctx.lineTo(x,H-10);ctx.stroke();
+    const dt=new Date(today);dt.setDate(dt.getDate()+i);
+    ctx.fillText((dt.getDate()+'.'+(dt.getMonth()+1)),x-14,H-1);
+  }
+  ctx.beginPath();ctx.moveTo(0,midY);ctx.lineTo(W,midY);ctx.strokeStyle='#3a4a6a';ctx.stroke();
+  const bioVal=(p,date)=>Math.sin(2*Math.PI*((date-d)/(86400000*p))) ;
+  const colors=['#ff7b8a','#ffb86b','#7c9cff'];
+  periods.forEach((per,i)=>{
+    ctx.beginPath();ctx.strokeStyle=colors[i];ctx.lineWidth=2;
+    for(let x=0;x<=days;x++){
+      const dt=new Date(today);dt.setDate(dt.getDate()+x-R);
+      const y=midY-bioVal(per[1],dt)*(midY-20);
+      x?ctx.lineTo(x*step,y):ctx.moveTo(0,y);
+    }
+    ctx.stroke();
+  });
+  // сегодня
+  ctx.beginPath();ctx.strokeStyle='#fff';ctx.setLineDash([4,4]);ctx.lineWidth=1;
+  ctx.moveTo(R*step,10);ctx.lineTo(R*step,H-10);ctx.stroke();ctx.setLineDash([]);
+  // значения сегодня
+  const diffs=[23,28,33].map(p=>bioVal(p,today));
+  const crit=[23,28,33].map((p,i)=>{
+    let found=null;
+    for(let k=0;k<=7;k++){const dt=new Date(today);dt.setDate(dt.getDate()+k);
+      if(Math.abs(bioVal(p,dt))<0.08){found=dt;continue;}}
+    return found;
+  });
+  const names=periods.map(p=>p[0]);
+  let html='<table><thead><tr><th>Ритм</th><th>Сегодня</th><th>Оценка дня</th><th>«Ноль» в ближайшие 7 дней</th></tr></thead><tbody>';
+  diffs.forEach((v,i)=>{
+    const pct=Math.round(v*100);
+    const badge=v>0.3?'<span class="badge b-g">подъём</span>':v<-0.3?'<span class="badge b-r">спад</span>':'<span class="badge b-y">нестабильно</span>';
+    const c=crit[i]?crit[i].toLocaleDateString('ru-RU',{day:'numeric',month:'long'}):'—';
+    html+=`<tr><td>${names[i]}</td><td><b>${pct>0?'+':''}${pct}%</b></td><td>${badge}</td><td>${c}</td></tr>`;
+  });
+  html+='</tbody></table>';
+  document.getElementById('bioToday').innerHTML=html;
+}
+function calcBio(){
+  document.getElementById('bioResult').classList.remove('hidden');
+  requestAnimationFrame(drawBio);
+}
+window.addEventListener('resize',()=>{if(!document.getElementById('bioResult').classList.contains('hidden'))drawBio();});
+
+// ---------- режим дня ----------
+function calcDay(){
+  const wake=toH(document.getElementById('dWake').value);
+  const s1=toH(document.getElementById('dSchool1').value);
+  const s2=toH(document.getElementById('dSchool2').value);
+  const road=parseInt(document.getElementById('dRoad').value)||0;
+  const sport=toH(document.getElementById('dSport').value);
+  const teen=document.getElementById('age')?document.getElementById('age').value==='teen':true;
+  const cycles=6; // 9 часов сна
+  const bed=wake-cycles*CYC; // отбой
+  const out=[];
+  const add=(t,d,c)=>out.push([fmt(t),d,c||'']);
+  add(wake,'Подъём','Стакан воды, умыться, 10 минут лёгкой разминки — так мозг быстрее включится');
+  add(wake+0.25,'Завтрак','Обязательно белковый: каша, яйца, творог. Без завтрака к 3-му уроку падает концентрация');
+  add(s1-road/60,'Выход из дома','Дорога '+road+' мин. Лучше пешком — это «разгон» для мозга');
+  add(s1,'Уроки','—');
+  add(s2,'Обед','Через 3–4 часа после завтрака — именно тогда растёт голод, а не «потому что пора»');
+  add(s2+1,'Отдых / прогулка','1–1,5 часа без учёбы. Гулять лучше до домашних заданий — движение снимает напряжение');
+  add(sport,'Секция / спорт','—');
+  add(sport+1.5,'Ужин','Лёгкий, за 2–3 часа до сна. Тяжёлая еда на ночь ухудшает засыпание');
+  add(sport+2,'Домашние задания','Самое сложное — первым, пока мозг не устал. Перерывы каждые 40–45 минут');
+  const screentime=Math.max(bed-1,Math.min(sport+2+2.5,bed-0.5));
+  add(Math.max(bed-1,sport+4.5),'Экран — выключить','Минимум час до сна: телефон не в руках, а на зарядке в другом углу комнаты');
+  add(Math.max(bed-0.75,sport+5),'Вечерние дела','Душ, приглушённый свет, подготовка вещей на завтра — ритуал, после которого сон приходит быстрее');
+  add(bed,'Отбой','Лечь в одно и то же время. Сон: '+(cycles*90)+' минут до подъёма');
+  document.querySelector('#dayTable tbody').innerHTML=out.map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td style="color:var(--muted)">${r[2]}</td></tr>`).join('');
+  document.getElementById('dayResult').style.display='block';
+}
+
+calcSleep();
+</script>
+</body>
+  </html>
